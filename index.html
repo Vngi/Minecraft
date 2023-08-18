@@ -39,12 +39,12 @@
 
         function calculateNetherCoords(x, y, z) {
             const ratio = 8;
-            const netherX = x / ratio;
+            const netherX = Math.floor(x / ratio);
             const netherY = y;
-            const netherZ = z / ratio;
-            document.getElementById("netherX").textContent = netherX.toFixed(2);
-            document.getElementById("netherY").textContent = netherY.toFixed(2);
-            document.getElementById("netherZ").textContent = netherZ.toFixed(2);
+            const netherZ = Math.floor(z / ratio);
+            document.getElementById("netherX").textContent = netherX;
+            document.getElementById("netherY").textContent = netherY;
+            document.getElementById("netherZ").textContent = netherZ;
         }
 
         function updateCalculateButton() {
