@@ -1,5 +1,7 @@
 # Minecraft-Calculator
 
+You can use it directly on github too: - [Click Here! - Opens in Github Pages](https://vngi.github.io/Minecraft-Calculator/)
+
 # Overworld to Nether Coordinate Converter
 
 Welcome to the Overworld to Nether Coordinate Converter! This simple web application allows you to convert Overworld coordinates to their corresponding Nether coordinates in the popular game Minecraft.
