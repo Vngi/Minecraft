@@ -6,45 +6,46 @@
 </head>
 <body>
     <div class="container">
-        <h1>Overworld to Nether Coordinate Converter</h1>
+        <h1 id="pageTitle">Nether to Overworld Coordinate Converter</h1>
         
         <div class="convert-section">
             <label for="pasteCoords">Paste Coordinates:</label>
             <input type="text" id="pasteCoords" placeholder="Paste coordinates here" oninput="updateCalculateButton()">
+            <button id="toggleButton" onclick="toggleConversion()">Overworld to Nether</button>
         </div>
         
         <div class="input-section">
-            <label for="xCoord">Overworld X Coordinate:</label>
+            <label for="xCoord" id="xCoordLabel">Nether X Coordinate:</label>
             <input type="number" id="xCoord" placeholder="Enter X coordinate">
             
-            <label for="yCoord">Overworld Y Coordinate:</label>
+            <label for="yCoord" id="yCoordLabel">Nether Y Coordinate:</label>
             <input type="number" id="yCoord" placeholder="Enter Y coordinate">
             
-            <label for="zCoord">Overworld Z Coordinate:</label>
+            <label for="zCoord" id="zCoordLabel">Nether Z Coordinate:</label>
             <input type="number" id="zCoord" placeholder="Enter Z coordinate">
             
             <button id="calculateButton" onclick="handleConvertClick()">Calculate</button>
         </div>
         
         <div class="result-section">
-            <h2>Nether Portal Coordinates</h2>
-            <p><strong>Nether X:</strong> <span id="netherX"></span></p>
-            <p><strong>Nether Y:</strong> <span id="netherY"></span></p>
-            <p><strong>Nether Z:</strong> <span id="netherZ"></span></p>
+            <h2 id="resultTitle">Overworld Coordinates</h2>
+            <p><strong>X:</strong> <span id="netherX"></span></p>
+            <p><strong>Y:</strong> <span id="netherY"></span></p>
+            <p><strong>Z:</strong> <span id="netherZ"></span></p>
         </div>
     </div>
 
     <script>
         let storedCoords = [];
+        let isConvertingToNether = false;
 
-        function calculateNetherCoords(x, y, z) {
+        function calculateCoords(x, y, z) {
             const ratio = 8;
-            const netherX = Math.floor(x / ratio);
-            const netherY = y;
-            const netherZ = Math.floor(z / ratio);
-            document.getElementById("netherX").textContent = netherX;
-            document.getElementById("netherY").textContent = netherY;
-            document.getElementById("netherZ").textContent = netherZ;
+            const convertedX = isConvertingToNether ? Math.floor(x / ratio) : x * ratio;
+            const convertedZ = isConvertingToNether ? Math.floor(z / ratio) : z * ratio;
+            document.getElementById("netherX").textContent = convertedX;
+            document.getElementById("netherY").textContent = y;
+            document.getElementById("netherZ").textContent = convertedZ;
         }
 
         function updateCalculateButton() {
@@ -52,10 +53,50 @@
             const calculateButton = document.getElementById("calculateButton");
             
             if (pasteCoordsInput.trim() !== "") {
-                calculateButton.textContent = "Convert";
+                calculateButton.textContent = isConvertingToNether ? "Convert" : "Calculate";
             } else {
                 calculateButton.textContent = "Calculate";
             }
+        }
+
+        function toggleConversion() {
+            isConvertingToNether = !isConvertingToNether;
+            const pageTitle = document.getElementById("pageTitle");
+            const resultTitle = document.getElementById("resultTitle");
+            const xCoordLabel = document.getElementById("xCoordLabel");
+            const yCoordLabel = document.getElementById("yCoordLabel");
+            const zCoordLabel = document.getElementById("zCoordLabel");
+            const body = document.body;
+            const container = document.querySelector('.container');
+            const toggleButton = document.getElementById("toggleButton");
+
+            if (isConvertingToNether) {
+                document.getElementById("calculateButton").textContent = "Convert";
+                pageTitle.textContent = "Overworld to Nether Coordinate Converter";
+                resultTitle.textContent = "Nether Coordinates";
+                xCoordLabel.textContent = "Overworld X Coordinate:";
+                yCoordLabel.textContent = "Overworld Y Coordinate:";
+                zCoordLabel.textContent = "Overworld Z Coordinate:";
+                
+                body.classList.add('converting-to-nether');
+                container.classList.add('converting-to-nether');
+                pageTitle.classList.add('converting-to-nether');
+                toggleButton.textContent = "Nether to Overworld";
+            } else {
+                document.getElementById("calculateButton").textContent = "Calculate";
+                pageTitle.textContent = "Nether to Overworld Coordinate Converter";
+                resultTitle.textContent = "Overworld Coordinates";
+                xCoordLabel.textContent = "Nether X Coordinate:";
+                yCoordLabel.textContent = "Nether Y Coordinate:";
+                zCoordLabel.textContent = "Nether Z Coordinate:";
+                
+                body.classList.remove('converting-to-nether');
+                container.classList.remove('converting-to-nether');
+                pageTitle.classList.remove('converting-to-nether');
+                toggleButton.textContent = "Overworld to Nether";
+            }
+
+            updateCalculateButton();
         }
 
         function handleConvertClick() {
@@ -65,16 +106,16 @@
                 storedCoords = pasteCoordsInput.split(" ").map(coord => parseFloat(coord.trim()));
 
                 if (storedCoords.length === 3 && !storedCoords.some(isNaN)) {
-                    const [overworldX, overworldY, overworldZ] = storedCoords;
-                    document.getElementById("xCoord").value = overworldX;
-                    document.getElementById("yCoord").value = overworldY;
-                    document.getElementById("zCoord").value = overworldZ;
-                    calculateNetherCoords(overworldX, overworldY, overworldZ);
+                    const [x, y, z] = storedCoords;
+                    document.getElementById("xCoord").value = x;
+                    document.getElementById("yCoord").value = y;
+                    document.getElementById("zCoord").value = z;
+                    calculateCoords(x, y, z);
                 } else {
                     alert("Invalid input format. Please enter coordinates in the format 'X Y Z'.");
                 }
             } else {
-                calculateNetherCoords(
+                calculateCoords(
                     parseFloat(document.getElementById("xCoord").value),
                     parseFloat(document.getElementById("yCoord").value),
                     parseFloat(document.getElementById("zCoord").value)
